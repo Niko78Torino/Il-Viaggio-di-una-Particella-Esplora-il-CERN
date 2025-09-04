@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Viaggio di una Particella: Esplora il CERN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Scientific Neutral -->
+    <!-- Application Structure Plan: A single-page, vertical scrolling application with a sticky top navigation bar. The structure directly follows the six chronological phases of the CERN process described in the report. This linear journey approach is the most intuitive way for a user to understand a step-by-step process. Interactivity is focused on key areas: a dynamic chart for comparing accelerator energies (Phase 2) and a tabbed interface for exploring the different detectors (Phase 5), allowing users to dive deeper without being overwhelmed by information. -->
+    <!-- Visualization & Content Choices: 1. Accelerator Energy: Goal=Compare/Change, Viz=Bar Chart (Logarithmic), Interaction=Click on bar updates text description, Justification=Visually conveys the exponential energy increase which is hard to grasp from text alone, Library=Chart.js. 2. Detectors: Goal=Organize, Viz=Tab-like buttons, Interaction=Clicking a button shows that detector's description, Justification=Organizes related but distinct pieces of information neatly, preventing clutter and cognitive overload. 3. Data Flow: Goal=Organize, Viz=HTML/CSS flowchart, Interaction=None, Justification=Visually represents the process flow simply and effectively without needing a library. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F2;
+            color: #2c3e50;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        .detector-btn {
+            transition: all 0.3s ease;
+        }
+        .detector-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4">
+            <ul class="flex items-center justify-center space-x-2 md:space-x-6 py-4 overflow-x-auto">
+                <li><a href="#fase1" class="nav-link text-sm md:text-base font-medium py-2 px-1 md:px-3 whitespace-nowrap">1. Sorgente</a></li>
+                <li><a href="#fase2" class="nav-link text-sm md:text-base font-medium py-2 px-1 md:px-3 whitespace-nowrap">2. Acceleratori</a></li>
+                <li><a href="#fase3" class="nav-link text-sm md:text-base font-medium py-2 px-1 md:px-3 whitespace-nowrap">3. LHC</a></li>
+                <li><a href="#fase4" class="nav-link text-sm md:text-base font-medium py-2 px-1 md:px-3 whitespace-nowrap">4. Collisione</a></li>
+                <li><a href="#fase5" class="nav-link text-sm md:text-base font-medium py-2 px-1 md:px-3 whitespace-nowrap">5. Rivelatori</a></li>
+                <li><a href="#fase6" class="nav-link text-sm md:text-base font-medium py-2 px-1 md:px-3 whitespace-nowrap">6. Dati</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+
+        <section class="text-center mb-16 md:mb-24">
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-4">Un Viaggio nel Cuore della Materia</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">Un'esplorazione interattiva del processo del CERN: dalla più semplice particella alle scoperte che definiscono l'universo.</p>
+        </section>
+
+        <div class="space-y-16 md:space-y-24">
+
+            <section id="fase1" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-2 text-blue-600">FASE 1</h2>
+                <h3 class="text-2xl md:text-4xl font-bold text-center mb-8">La Sorgente: Dove Tutto Inizia</h3>
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg grid md:grid-cols-3 items-center gap-8">
+                    <div class="md:col-span-1 flex justify-center">
+                        <div class="w-32 h-32 rounded-full bg-blue-50 border-4 border-blue-200 flex items-center justify-center relative">
+                            <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+                            <div class="absolute w-full h-full border border-blue-200 rounded-full animate-spin" style="animation-duration: 5s;">
+                                <div class="absolute top-1/2 -mt-1 -left-1 w-2 h-2 bg-gray-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <p class="text-lg text-gray-700 mb-4">Contrariamente a quanto si possa pensare, il processo non inizia con macchinari complessi, ma con qualcosa di molto semplice: una **bombola di idrogeno**.</p>
+                        <ul class="space-y-2 list-inside list-decimal">
+                            <li><span class="font-semibold">Estrazione dei Protoni:</span> Un campo elettrico "strappa" via gli elettroni dagli atomi di idrogeno.</li>
+                            <li><span class="font-semibold">La Particella "Proiettile":</span> Ciò che rimane è un singolo **protone**, la particella che verrà accelerata. Miliardi di questi protoni formeranno i fasci nell'LHC.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fase2" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-2 text-blue-600">FASE 2</h2>
+                <h3 class="text-2xl md:text-4xl font-bold text-center mb-8">La Staffetta degli Acceleratori</h3>
+                 <p class="text-lg text-center max-w-3xl mx-auto mb-10">I protoni non entrano direttamente nell'LHC. Vengono accelerati gradualmente attraverso una serie di macchine più piccole, aumentando esponenzialmente la loro energia. Clicca sulle barre del grafico per vedere i dettagli di ogni stadio.</p>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <div class="chart-container">
+                        <canvas id="acceleratorChart"></canvas>
+                    </div>
+                    <div id="acceleratorInfo" class="mt-8 p-6 bg-gray-50 rounded-lg min-h-[120px] transition-all duration-300">
+                        <h4 class="font-bold text-xl mb-2 text-gray-800">Seleziona uno stadio</h4>
+                        <p class="text-gray-600">Clicca su una barra del grafico per scoprire di più su quell'acceleratore e sull'energia che conferisce ai protoni.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fase3" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-2 text-blue-600">FASE 3</h2>
+                <h3 class="text-2xl md:text-4xl font-bold text-center mb-8">L'Evento Principale: Il Large Hadron Collider</h3>
+                 <p class="text-lg text-center max-w-3xl mx-auto mb-10">L'LHC è la più grande e potente macchina scientifica mai costruita. È un anello sotterraneo dove i protoni raggiungono velocità prossime a quella della luce grazie a tecnologie all'avanguardia.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition-shadow">
+                        <div class="text-4xl font-bold text-blue-600">27 km</div>
+                        <div class="text-gray-600 mt-2">Circonferenza dell'anello sotterraneo</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition-shadow">
+                        <div class="text-4xl font-bold text-blue-600">99.99%</div>
+                        <div class="text-gray-600 mt-2">Della velocità della luce raggiunta</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition-shadow">
+                        <div class="text-4xl font-bold text-blue-600">-271.3 °C</div>
+                        <div class="text-gray-600 mt-2">Temperatura dei magneti superconduttori</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition-shadow">
+                        <div class="text-4xl font-bold text-blue-600">11.000+</div>
+                        <div class="text-gray-600 mt-2">Giri al secondo per ogni protone</div>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition-shadow">
+                        <div class="text-4xl font-bold text-blue-600">9.600</div>
+                        <div class="text-gray-600 mt-2">Magneti per mantenere la traiettoria</div>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition-shadow">
+                        <div class="text-4xl font-bold text-blue-600">Ultra-Alto</div>
+                        <div class="text-gray-600 mt-2">Vuoto, più spinto di quello interplanetario</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fase4" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-2 text-blue-600">FASE 4</h2>
+                <h3 class="text-2xl md:text-4xl font-bold text-center mb-8">La Collisione: Energia si Trasforma in Materia</h3>
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg flex flex-col md:flex-row items-center gap-8">
+                    <div class="text-center">
+                         <div class="text-5xl font-bold text-gray-800">E = mc²</div>
+                         <p class="text-gray-600">L'equazione di Einstein in azione.</p>
+                    </div>
+                    <div class="w-px bg-gray-200 self-stretch hidden md:block"></div>
+                     <div class="h-px bg-gray-200 w-full md:hidden"></div>
+                    <div>
+                        <p class="text-lg text-gray-700 mb-4">Nel momento cruciale, i due fasci di protoni si scontrano frontalmente. L'immensa energia cinetica della collisione (fino a 13.6 Tera-elettronvolt) si trasforma in massa.</p>
+                        <p class="text-lg text-gray-700">Questa trasformazione crea una cascata di particelle nuove ed esotiche, molte delle quali esistevano solo nei primi istanti dopo il Big Bang, permettendoci di studiare le origini dell'universo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fase5" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-2 text-blue-600">FASE 5</h2>
+                <h3 class="text-2xl md:text-4xl font-bold text-center mb-8">I Rivelatori: "Fotografare" l'Invisibile</h3>
+                <p class="text-lg text-center max-w-3xl mx-auto mb-10">I rivelatori sono gigantesche "macchine fotografiche" digitali, alte come palazzi, progettate per "vedere" e registrare le tracce delle particelle create nelle collisioni. Seleziona un esperimento per scoprire il suo obiettivo scientifico.</p>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <div id="detector-buttons" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-6">
+                        <button data-detector="atlas" class="detector-btn px-4 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700">ATLAS</button>
+                        <button data-detector="cms" class="detector-btn px-4 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700">CMS</button>
+                        <button data-detector="alice" class="detector-btn px-4 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700">ALICE</button>
+                        <button data-detector="lhcb" class="detector-btn px-4 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700">LHCb</button>
+                    </div>
+                    <div id="detector-info" class="p-6 bg-blue-50 rounded-lg min-h-[150px]">
+                        <h4 class="font-bold text-xl mb-2 text-blue-800">Seleziona un rivelatore</h4>
+                        <p class="text-blue-700">Ogni esperimento ha un obiettivo specifico, dalla ricerca di nuove particelle allo studio delle condizioni del Big Bang.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fase6" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-2 text-blue-600">FASE 6</h2>
+                <h3 class="text-2xl md:text-4xl font-bold text-center mb-8">La Valanga di Dati e l'Analisi Globale</h3>
+                <p class="text-lg text-center max-w-3xl mx-auto mb-10">Le collisioni generano una quantità di dati sbalorditiva, che deve essere filtrata, distribuita e analizzata da una rete scientifica mondiale per portare a nuove scoperte.</p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="text-center p-4 bg-white rounded-lg shadow-md w-60">
+                        <div class="text-3xl font-bold text-red-500">600M</div>
+                        <div class="text-sm text-gray-600">Collisioni al secondo</div>
+                    </div>
+                    <div class="text-5xl text-gray-400 font-thin">&rarr;</div>
+                    <div class="text-center p-4 bg-white rounded-lg shadow-md w-60">
+                        <div class="text-3xl font-bold text-yellow-500">1.000</div>
+                        <div class="text-sm text-gray-600">Eventi "interessanti" salvati al secondo</div>
+                    </div>
+                    <div class="text-5xl text-gray-400 font-thin">&rarr;</div>
+                    <div class="text-center p-4 bg-white rounded-lg shadow-md w-60">
+                        <div class="text-3xl font-bold text-green-500">170+</div>
+                        <div class="text-sm text-gray-600">Centri di calcolo nel mondo</div>
+                    </div>
+                     <div class="text-5xl text-gray-400 font-thin">&rarr;</div>
+                    <div class="text-center p-4 bg-white rounded-lg shadow-md w-60">
+                         <div class="text-3xl font-bold text-blue-500">Scoperta</div>
+                        <div class="text-sm text-gray-600">Analisi e confronto con le teorie</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16 md:mt-24">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-400">
+            <p>Nicola Nicolaci © 2025 applicazione interattiva per uso didattico</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const acceleratorData = {
+                labels: ['LINAC 4', 'PS Booster', 'PS', 'SPS'],
+                energies: [0.00016, 2, 25, 450],
+                descriptions: [
+                    {
+                        name: 'LINAC 4 (Linear Accelerator)',
+                        text: 'È il primo stadio. I protoni vengono accelerati in linea retta da potenti campi elettrici, raggiungendo un\'energia di 160 MeV (Mega-elettronvolt).'
+                    },
+                    {
+                        name: 'PS Booster (Proton Synchrotron Booster)',
+                        text: 'Riceve i protoni dal LINAC e li accelera ulteriormente in un anello di 157 metri. L\'energia sale a 2 GeV (Giga-elettronvolt).'
+                    },
+                    {
+                        name: 'PS (Proton Synchrotron)',
+                        text: 'Un anello più grande (628 metri). Qui i protoni vengono portati a 25 GeV, un incremento significativo di energia.'
+                    },
+                    {
+                        name: 'SPS (Super Proton Synchrotron)',
+                        text: 'L\'ultimo anello prima del gran finale. Con una circonferenza di quasi 7 km, l\'SPS spinge i protoni fino a 450 GeV, pronti per l\'LHC.'
+                    }
+                ]
+            };
+
+            const ctx = document.getElementById('acceleratorChart').getContext('2d');
+            const acceleratorChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: acceleratorData.labels,
+                    datasets: [{
+                        label: 'Energia (GeV) - Scala Logaritmica',
+                        data: acceleratorData.energies,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.5)',
+                            'rgba(59, 130, 246, 0.6)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(59, 130, 246, 0.8)',
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(59, 130, 246, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            title: {
+                                display: true,
+                                text: 'Energia in Giga-elettronvolt (GeV)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + ' GeV';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const info = acceleratorData.descriptions[index];
+                            const infoBox = document.getElementById('acceleratorInfo');
+                            infoBox.innerHTML = `
+                                <h4 class="font-bold text-xl mb-2 text-gray-800">${info.name}</h4>
+                                <p class="text-gray-600">${info.text}</p>
+                            `;
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                    }
+                }
+            });
+
+            const detectorData = {
+                atlas: { name: 'ATLAS (A Toroidal LHC ApparatuS)', text: 'Un esperimento "general purpose", progettato per esplorare la più ampia gamma possibile di fenomeni fisici, dalla ricerca del Bosone di Higgs a dimensioni extra e particelle che potrebbero costituire la materia oscura. È uno dei due esperimenti che hanno scoperto il Bosone di Higgs nel 2012.' },
+                cms: { name: 'CMS (Compact Muon Solenoid)', text: 'L\'altro esperimento "general purpose". Come ATLAS, ha un vasto programma di fisica. È costruito attorno a un enorme magnete solenoide che genera un campo magnetico 100.000 volte più forte di quello terrestre. Anch\'esso ha co-scoperto il Bosone di Higgs.' },
+                alice: { name: 'ALICE (A Large Ion Collider Experiment)', text: 'Studia il "plasma di quark e gluoni", uno stato della materia che si pensa sia esistito nei primissimi microsecondi dopo il Big Bang. Per farlo, fa collidere nuclei di piombo invece che protoni.' },
+                lhcb: { name: 'LHCb (Large Hadron Collider beauty)', text: 'Indaga sulle sottili differenze tra materia e antimateria studiando una particella chiamata "quark beauty" (o "bottom"). Cerca di rispondere a una delle più grandi domande: perché l\'universo è fatto di materia e non di antimateria?' }
+            };
+
+            const detectorButtons = document.querySelectorAll('.detector-btn');
+            const detectorInfoBox = document.getElementById('detector-info');
+
+            detectorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const detectorId = button.dataset.detector;
+                    const info = detectorData[detectorId];
+
+                    detectorInfoBox.innerHTML = `
+                        <h4 class="font-bold text-xl mb-2 text-blue-800">${info.name}</h4>
+                        <p class="text-blue-700">${info.text}</p>
+                    `;
+                    
+                    detectorButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                        });
+                    }
+                });
+            }, { rootMargin: '-50% 0px -50% 0px' });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
