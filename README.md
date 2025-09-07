@@ -1,4 +1,6 @@
 Esplorazione Interattiva del Processo del CERN
+
+
 Questa è un'applicazione web a pagina singola (SPA) creata per illustrare in modo interattivo e didattico il complesso processo di accelerazione e collisione delle particelle che avviene al CERN di Ginevra. L'obiettivo è trasformare un argomento scientifico complesso in un'esperienza digitale coinvolgente e di facile comprensione per un vasto pubblico.
 
 ✨ Funzionalità Principali
